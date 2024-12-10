@@ -247,25 +247,25 @@ export default function Dashboard() {
                   key={item.id}
                   className="p-4 bg-background rounded-lg shadow hover:shadow-lg transition-shadow duration-300 flex flex-col border border-primary"
                 >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center space-x-2">
                       <p className="text-gray-800 font-semibold">
                         {item.itemName}
                       </p>
                       <button
                         onClick={() => toggleReallyWant(item)}
-                        className={`inline-flex items-center justify-center w-8 h-8 rounded-full transition-colors ${
+                        className={`inline-flex items-center justify-center p-1.5 rounded-full transition-all ${
                           item.reallyWant
-                            ? "bg-red-100 text-red-500 hover:bg-red-200"
-                            : "bg-gray-100 text-gray-400 hover:bg-gray-200"
+                            ? "text-yellow-500 hover:text-yellow-600"
+                            : "text-gray-300 hover:text-gray-400"
                         }`}
                         title={
                           item.reallyWant
-                            ? "Remove priority status"
-                            : "Mark as high priority"
+                            ? "Remove from favorites"
+                            : "Mark as favorite"
                         }
                       >
-                        ⭐
+                        {item.reallyWant ? "⭐" : "★"}
                       </button>
                     </div>
                     <button
