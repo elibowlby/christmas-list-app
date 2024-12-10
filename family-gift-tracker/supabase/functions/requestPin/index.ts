@@ -72,7 +72,7 @@ serve(async (req: Request) => {
           },
         ],
         from: {
-          email: "bajablast@bajablast@bowlby-bowl-full-of-jelly.com", // Must be verified in SendGrid
+          email: "bajablast@bowlby-bowl-full-of-jelly.com", // Must be verified in SendGrid
           name: "Baja Blast",
         },
         subject: "Your Family Gift Tracker PIN",
