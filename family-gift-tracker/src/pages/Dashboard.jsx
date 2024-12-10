@@ -11,6 +11,9 @@ export default function Dashboard() {
   const [familyItems, setFamilyItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // New state for copy confirmation
+  const [copyStatus, setCopyStatus] = useState("");
+
   useEffect(() => {
     if (!userName) {
       navigate("/");
@@ -115,37 +118,35 @@ export default function Dashboard() {
     navigate("/");
   }
 
-  // Add the exportList function
-  const exportList = (items, memberName) => {
+  // Replace exportList with copyList
+  const copyList = (items, memberName) => {
     if (items.length === 0) {
       alert(`${memberName}'s list is empty!`);
       return;
     }
 
-    const csvContent =
-      "data:text/csv;charset=utf-8," +
-      ["Item Name,Item Link,Item Notes"]
-        .concat(
-          items.map((item) =>
-            [
-              `"${item.itemName.replace(/"/g, '""')}"`,
-              `"${item.itemLink || ""}"`,
-              `"${item.itemNotes ? item.itemNotes.replace(/"/g, '""') : ""}"`,
-            ].join(",")
-          )
+    const formattedList =
+      `🎄 ${memberName}'s Wishlist 🎁\n\n` +
+      items
+        .map(
+          (item, index) =>
+            `${index + 1}. ${item.itemName}\n   Link: ${
+              item.itemLink || "N/A"
+            }\n   Notes: ${item.itemNotes || "N/A"}\n`
         )
         .join("\n");
 
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute(
-      "download",
-      `${memberName}_wishlist_${new Date().toISOString().split("T")[0]}.csv`
-    );
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    navigator.clipboard
+      .writeText(formattedList)
+      .then(() => {
+        setCopyStatus("Copied to clipboard!");
+        setTimeout(() => setCopyStatus(""), 2000);
+      })
+      .catch((err) => {
+        console.error("Failed to copy: ", err);
+        setCopyStatus("Failed to copy.");
+        setTimeout(() => setCopyStatus(""), 2000);
+      });
   };
 
   const others = users.filter((u) => u.name !== userName);
@@ -255,16 +256,18 @@ export default function Dashboard() {
             </select>
             <button
               onClick={() =>
-                exportList(
+                copyList(
                   getMemberItems(selectedFamilyMember),
                   selectedFamilyMember
                 )
               }
               className="ml-4 bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-hover transition-colors"
             >
-              Export List 📥
+              Copy List 📋
             </button>
           </div>
+
+          {copyStatus && <p className="text-green-500 mb-4">{copyStatus}</p>}
 
           {getMemberItems(selectedFamilyMember).length === 0 ? (
             <p className="text-gray-500 text-center py-8">
