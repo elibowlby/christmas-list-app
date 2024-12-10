@@ -245,14 +245,16 @@ export default function Dashboard() {
         {/* Left panel: My Wishlist */}
         <div className="w-full md:w-96 bg-white rounded-xl shadow-sm p-6 flex-shrink-0">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-primary">Your Wishlist</h2>
-            {/* Toggle button visible only on mobile */}
-            <button
-              className="md:hidden text-primary focus:outline-none p-1"
-              onClick={() => setIsMyWishlistCollapsed(!isMyWishlistCollapsed)}
-            >
-              {isMyWishlistCollapsed ? "▼" : "▲"}
-            </button>
+            <div className="flex items-center">
+              {/* Toggle button visible only on mobile */}
+              <button
+                className="md:hidden text-primary focus:outline-none p-1 mr-2"
+                onClick={() => setIsMyWishlistCollapsed(!isMyWishlistCollapsed)}
+              >
+                {isMyWishlistCollapsed ? "▼" : "▲"}
+              </button>
+              <h2 className="text-2xl font-bold text-primary">Your Wishlist</h2>
+            </div>
             <button
               onClick={addMyItem}
               className="bg-secondary text-white p-3 rounded-lg hover:bg-secondary-hover transition-colors flex items-center gap-2 ml-2"
@@ -329,18 +331,20 @@ export default function Dashboard() {
         {/* Main area: Family Wishlists */}
         <div className="flex-1 bg-white rounded-xl shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-primary">
-              Family Wishlists
-            </h2>
-            {/* Toggle button visible only on mobile */}
-            <button
-              className="md:hidden text-primary focus:outline-none p-1"
-              onClick={() =>
-                setIsFamilyWishlistCollapsed(!isFamilyWishlistCollapsed)
-              }
-            >
-              {isFamilyWishlistCollapsed ? "▼" : "▲"}
-            </button>
+            <div className="flex items-center">
+              {/* Toggle button visible only on mobile */}
+              <button
+                className="md:hidden text-primary focus:outline-none p-1 mr-2"
+                onClick={() =>
+                  setIsFamilyWishlistCollapsed(!isFamilyWishlistCollapsed)
+                }
+              >
+                {isFamilyWishlistCollapsed ? "▼" : "▲"}
+              </button>
+              <h2 className="text-2xl font-bold text-primary">
+                Family Wishlists
+              </h2>
+            </div>
           </div>
 
           {/* Conditionally render Family Wishlists content based on collapse state on mobile */}
