@@ -73,21 +73,25 @@ serve(async (req: Request) => {
         ],
         from: {
           email: "bajablastbowlby@gmail.com", // Must be verified in SendGrid
-          name: "Family Gift Tracker",
+          name: "Baja Blast Bowlby",
         },
         subject: "Your Family Gift Tracker PIN",
         content: [
           {
             type: "text/html",
             value: `
-            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-              <h1 style="color: #2563eb;">Family Gift Tracker</h1>
-              <p>Hello ${name},</p>
-              <p>Your new PIN is: <strong>${newPin}</strong></p>
-              <p>Use this PIN to log in to your account.</p>
-              <p style="color: #666;">If you didn't request this PIN, please ignore this email.</p>
-            </div>
-          `,
+    <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+      <h1 style="color: #2563eb;">Family Gift Tracker</h1>
+      <p>Hello ${name},</p>
+      <p>Your new PIN is: <strong>${newPin}</strong></p>
+      <p>Use this PIN to log in to your account.</p>
+      <div style="margin: 20px 0;">
+        <img src="https://i.pinimg.com/736x/ac/66/53/ac66534653f81ed5263111d3a653de63.jpg" alt="Holiday Meme" style="max-width: 100%; border-radius: 8px;">
+        <p style="color: #666; font-style: italic; margin-top: 8px;">When you forget your PIN but the family gift tracker has your back 😎🎄</p>
+      </div>
+      <p style="color: #666;">If you didn't request this PIN, please ignore this email.</p>
+    </div>
+    `,
           },
         ],
       }),
