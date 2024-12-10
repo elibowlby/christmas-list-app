@@ -186,12 +186,14 @@ export default function Dashboard() {
     const formattedList =
       `🎄 ${memberName}'s Wishlist 🎁\n\n` +
       items
-        .map(
-          (item, index) =>
-            `${index + 1}. ${item.itemName}\n   Link: ${
-              item.itemLink || "N/A"
-            }\n   Notes: ${item.itemNotes || "N/A"}\n`
-        )
+        .map((item, index) => {
+          const purchased = isPurchased(item);
+          return `${index + 1}. ${item.itemName}${
+            purchased ? " (Already being gifted by someone)" : ""
+          }\n   Link: ${item.itemLink || "N/A"}\n   Notes: ${
+            item.itemNotes || "N/A"
+          }\n`;
+        })
         .join("\n");
 
     navigator.clipboard
