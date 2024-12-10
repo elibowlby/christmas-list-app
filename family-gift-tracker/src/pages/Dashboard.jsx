@@ -92,6 +92,7 @@ export default function Dashboard() {
   }
 
   async function editItemLink(item) {
+    // Ensure that only the link and notes can be edited
     const newLink = window.prompt(
       "Edit the link for this item:",
       item.itemLink || ""
@@ -113,6 +114,39 @@ export default function Dashboard() {
     localStorage.removeItem("userName");
     navigate("/");
   }
+
+  // Add the exportList function
+  const exportList = (items, memberName) => {
+    if (items.length === 0) {
+      alert(`${memberName}'s list is empty!`);
+      return;
+    }
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      ["Item Name,Item Link,Item Notes"]
+        .concat(
+          items.map((item) =>
+            [
+              `"${item.itemName.replace(/"/g, '""')}"`,
+              `"${item.itemLink || ""}"`,
+              `"${item.itemNotes ? item.itemNotes.replace(/"/g, '""') : ""}"`,
+            ].join(",")
+          )
+        )
+        .join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute(
+      "download",
+      `${memberName}_wishlist_${new Date().toISOString().split("T")[0]}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const others = users.filter((u) => u.name !== userName);
 
@@ -207,17 +241,30 @@ export default function Dashboard() {
             Family Wishlists
           </h2>
 
-          <select
-            className="w-full mb-6 p-3 border border-primary rounded-lg bg-white text-primary focus:border-secondary focus:ring-2 focus:ring-secondary"
-            value={selectedFamilyMember}
-            onChange={(e) => setSelectedFamilyMember(e.target.value)}
-          >
-            {others.map((u) => (
-              <option key={u.id} value={u.name}>
-                {u.name}&apos;s List
-              </option>
-            ))}
-          </select>
+          <div className="flex justify-between items-center mb-4">
+            <select
+              className="w-full mb-0 p-3 border border-primary rounded-lg bg-white text-primary focus:border-secondary focus:ring-2 focus:ring-secondary"
+              value={selectedFamilyMember}
+              onChange={(e) => setSelectedFamilyMember(e.target.value)}
+            >
+              {others.map((u) => (
+                <option key={u.id} value={u.name}>
+                  {u.name}&apos;s List
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={() =>
+                exportList(
+                  getMemberItems(selectedFamilyMember),
+                  selectedFamilyMember
+                )
+              }
+              className="ml-4 bg-accent text-white px-4 py-2 rounded-lg hover:bg-accent-hover transition-colors"
+            >
+              Export List 📥
+            </button>
+          </div>
 
           {getMemberItems(selectedFamilyMember).length === 0 ? (
             <p className="text-gray-500 text-center py-8">
@@ -264,21 +311,35 @@ export default function Dashboard() {
                         </a>
                       )}
                     </div>
-                    {purchased && isOwnPurchase ? (
-                      <button
-                        onClick={() => unmarkPurchased(item)}
-                        className={`mt-2 md:mt-0 px-4 py-2 rounded-lg text-white bg-secondary hover:bg-secondary-hover transition-colors flex items-center gap-2`}
-                      >
-                        Unmark 🎁
-                      </button>
-                    ) : !purchased ? (
-                      <button
-                        onClick={() => markPurchased(item)}
-                        className={`mt-2 md:mt-0 px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors flex items-center gap-2`}
-                      >
-                        I'll Get This! 🎄
-                      </button>
-                    ) : null}
+                    <div className="flex items-center gap-2">
+                      {purchased && isOwnPurchase ? (
+                        <button
+                          onClick={() => unmarkPurchased(item)}
+                          className={`px-4 py-2 rounded-lg text-white bg-secondary hover:bg-secondary-hover transition-colors flex items-center gap-2`}
+                        >
+                          Unmark 🎁
+                        </button>
+                      ) : purchased && !isOwnPurchase ? (
+                        <button
+                          onClick={() =>
+                            alert(
+                              "You cannot unmark this item since someone else has already marked it."
+                            )
+                          }
+                          disabled
+                          className={`px-4 py-2 rounded-lg text-white bg-secondary opacity-50 cursor-not-allowed`}
+                        >
+                          Unmark 🎁
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => markPurchased(item)}
+                          className={`px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors flex items-center gap-2`}
+                        >
+                          I'll Get This! 🎄
+                        </button>
+                      )}
+                    </div>
                   </div>
                 );
               })}

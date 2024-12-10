@@ -19,6 +19,7 @@
   --color-text: #2f4f4f; /* Dark Slate Gray */
   --color-button-hover: #228b22; /* Forest Green */
   --color-button-secondary-hover: #8b0000; /* Dark Red */
+  --color-accent-hover: #e6c200; /* Darker Gold */
 }
 
 a {
@@ -67,6 +68,13 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+button.bg-accent {
+  background-color: var(--color-accent);
+}
+button.bg-accent:hover {
+  background-color: var(--color-accent-hover);
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: var(--color-text);
@@ -106,3 +114,5 @@ button:focus-visible {
     margin-bottom: 1.5rem;
   }
 }
+
+/* No additional changes needed */
