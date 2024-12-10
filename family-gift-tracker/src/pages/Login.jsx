@@ -116,7 +116,10 @@ function ForgotPinModal({ name, onClose }) {
         "https://qaybgsgencwnbsolinyz.supabase.co/functions/v1/requestPin",
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+          },
           body: JSON.stringify({ name: selectedName }),
         }
       );

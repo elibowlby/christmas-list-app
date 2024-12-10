@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.1.1";
+import { corsHeaders } from "../_shared/cors.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
 const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
@@ -8,10 +9,16 @@ const sendgridApiKey = Deno.env.get("SENDGRID_API_KEY")!;
 const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 serve(async (req: Request) => {
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   try {
     if (req.method !== "POST") {
       return new Response(JSON.stringify({ error: "Only POST allowed" }), {
         status: 405,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -19,6 +26,7 @@ serve(async (req: Request) => {
     if (!name) {
       return new Response(JSON.stringify({ error: "Name is required" }), {
         status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -31,6 +39,7 @@ serve(async (req: Request) => {
     if (userError || !user) {
       return new Response(JSON.stringify({ error: "User not found" }), {
         status: 404,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
@@ -43,7 +52,10 @@ serve(async (req: Request) => {
     if (updateError) {
       return new Response(
         JSON.stringify({ error: "Failed to update user PIN" }),
-        { status: 500 }
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
       );
     }
 
@@ -87,16 +99,19 @@ serve(async (req: Request) => {
 
     if (!emailResponse.ok) {
       return new Response(JSON.stringify({ error: "Failed to send email" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
       });
     }
 
     return new Response(JSON.stringify({ message: "PIN sent" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
   } catch (err) {
     console.error(err);
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
   }
