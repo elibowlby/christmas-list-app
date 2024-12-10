@@ -6,10 +6,12 @@ import Dashboard from "./pages/Dashboard";
 function App() {
   return (
     <Router basename="/christmas-list-app">
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-      </Routes>
+      <div className="flex flex-col min-h-screen">
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </div>
     </Router>
   );
 }

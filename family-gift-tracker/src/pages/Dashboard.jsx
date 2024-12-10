@@ -77,11 +77,12 @@ export default function Dashboard() {
     const me = users.find((u) => u.name === userName);
     const itemName = window.prompt("What would you like for Christmas? 🎄🎁");
     const itemLink = window.prompt("Add a link for the item (optional):");
+    const itemNotes = window.prompt("Add notes for the item (optional):");
     if (!itemName?.trim()) return;
 
     await supabase
       .from("wishlist_items")
-      .insert({ ownerId: me.id, itemName, itemLink });
+      .insert({ ownerId: me.id, itemName, itemLink, itemNotes });
     fetchData();
   }
 
@@ -90,11 +91,15 @@ export default function Dashboard() {
       "Edit the link for this item:",
       item.itemLink || ""
     );
-    if (newLink === null) return;
+    const newNotes = window.prompt(
+      "Edit the notes for this item:",
+      item.itemNotes || ""
+    );
+    if (newLink === null && newNotes === null) return;
 
     await supabase
       .from("wishlist_items")
-      .update({ itemLink: newLink })
+      .update({ itemLink: newLink, itemNotes: newNotes })
       .eq("id", item.id);
     fetchData();
   }
@@ -115,7 +120,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100 overflow-x-hidden">
       <div className="bg-white shadow-md border-b px-6 py-4 flex flex-col md:flex-row justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">
           🎄 Family Gift Tracker
@@ -131,9 +136,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8 p-4 md:p-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row gap-8 p-4 md:p-8 max-w-7xl mx-auto overflow-x-hidden">
         {/* Left panel: My Wishlist */}
-        <div className="w-full md:w-96 bg-white rounded-xl shadow-sm p-6">
+        <div className="w-full md:w-96 bg-white rounded-xl shadow-sm p-6 flex-shrink-0">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">Your Wishlist</h2>
             <button
@@ -166,11 +171,14 @@ export default function Dashboard() {
                       View Item
                     </a>
                   )}
+                  {item.itemNotes && (
+                    <p className="text-gray-500 mt-2">{item.itemNotes}</p>
+                  )}
                   <button
                     onClick={() => editItemLink(item)}
                     className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors mt-2"
                   >
-                    Edit Link
+                    Edit Link & Notes
                   </button>
                 </div>
               ))}
@@ -216,6 +224,9 @@ export default function Dashboard() {
                     >
                       {item.itemName}
                     </p>
+                    {item.itemNotes && (
+                      <p className="text-gray-500 mt-2">{item.itemNotes}</p>
+                    )}
                     <button
                       onClick={() =>
                         purchased ? unmarkPurchased(item) : markPurchased(item)

@@ -38,7 +38,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 overflow-x-hidden">
       {showForgotPinModal && (
         <ForgotPinModal
           name={name}
@@ -70,7 +70,7 @@ export default function Login() {
         </label>
         <input
           type="password"
-          className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-white text-gray-700"
+          className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={pin}
           onChange={(e) => setPin(e.target.value)}
         />
