@@ -248,10 +248,10 @@ export default function Dashboard() {
             <h2 className="text-2xl font-bold text-primary">Your Wishlist</h2>
             {/* Toggle button visible only on mobile */}
             <button
-              className="md:hidden text-primary focus:outline-none"
+              className="md:hidden text-primary focus:outline-none p-1"
               onClick={() => setIsMyWishlistCollapsed(!isMyWishlistCollapsed)}
             >
-              {isMyWishlistCollapsed ? "Expand" : "Collapse"}
+              {isMyWishlistCollapsed ? "▼" : "▲"}
             </button>
             <button
               onClick={addMyItem}
@@ -306,8 +306,19 @@ export default function Dashboard() {
                         {item.itemNotes}
                       </p>
                     )}
-                    {/* Add padding-bottom when "View Item" is not present */}
-                    {!item.itemLink && <div className="pb-4"></div>}
+                    {/* Adjust spacing to match title and button */}
+                    <div className="flex justify-between items-center mt-2">
+                      {/* Spacer to align the button */}
+                      <div className="flex-1"></div>
+                      {/* "I'll Get This" button */}
+                      {!item.itemLink && <div className="pb-4"></div>}
+                      <button
+                        onClick={() => markPurchased(item)}
+                        className={`px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors flex items-center gap-2`}
+                      >
+                        I&apos;ll Get This! 🎄
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -323,12 +334,12 @@ export default function Dashboard() {
             </h2>
             {/* Toggle button visible only on mobile */}
             <button
-              className="md:hidden text-primary focus:outline-none"
+              className="md:hidden text-primary focus:outline-none p-1"
               onClick={() =>
                 setIsFamilyWishlistCollapsed(!isFamilyWishlistCollapsed)
               }
             >
-              {isFamilyWishlistCollapsed ? "Expand" : "Collapse"}
+              {isFamilyWishlistCollapsed ? "▼" : "▲"}
             </button>
           </div>
 
