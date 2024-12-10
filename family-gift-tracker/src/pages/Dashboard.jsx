@@ -103,37 +103,50 @@ export default function Dashboard() {
 
   const others = users.filter((u) => u.name !== userName);
 
+  // src/pages/Dashboard.jsx - update the return section
   return (
-    <div className="min-h-screen flex flex-col">
-      <div className="bg-white border-b p-4 flex justify-between">
-        <h1 className="text-xl font-bold">Family Gift Tracker</h1>
-        <button onClick={logout} className="text-red-600">
+    <div className="min-h-screen bg-gray-100">
+      <div className="bg-white shadow-sm border-b px-4 py-3 flex justify-between items-center">
+        <h1 className="text-xl font-bold text-gray-800">Family Gift Tracker</h1>
+        <button
+          onClick={logout}
+          className="text-red-600 hover:text-red-700 font-medium"
+        >
           Log Out
         </button>
       </div>
-      <div className="flex flex-1">
+
+      <div className="flex gap-6 p-6 max-w-7xl mx-auto">
         {/* Left panel: My Wishlist */}
-        <div className="w-64 bg-gray-50 border-r p-4 hidden md:block">
-          <h2 className="text-lg font-bold mb-4">Your Wishlist</h2>
-          {myItems.map((item) => (
-            <div className="border p-2 mb-2" key={item.id}>
-              <p>{item.itemName}</p>
-              {/* Optionally add edit/delete */}
-            </div>
-          ))}
+        <div className="w-80 bg-white rounded-lg shadow-sm p-4">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
+            Your Wishlist
+          </h2>
+          <div className="space-y-3">
+            {myItems.map((item) => (
+              <div
+                key={item.id}
+                className="p-3 bg-gray-50 rounded-md border border-gray-200"
+              >
+                <p className="text-gray-700">{item.itemName}</p>
+              </div>
+            ))}
+          </div>
           <button
             onClick={addMyItem}
-            className="w-full mt-2 bg-blue-500 text-white p-2 rounded"
+            className="w-full mt-4 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors"
           >
             + Add Item
           </button>
         </div>
 
         {/* Main area: Family Wishlists */}
-        <div className="flex-1 p-4">
-          <h2 className="text-lg font-bold mb-2">View Other&#39s Wishlists</h2>
+        <div className="flex-1 bg-white rounded-lg shadow-sm p-4">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">
+            View Other&apos;s Wishlists
+          </h2>
           <select
-            className="border p-2 mb-4"
+            className="w-full mb-4 p-2 border border-gray-300 rounded-md bg-white text-gray-700"
             value={selectedFamilyMember}
             onChange={(e) => setSelectedFamilyMember(e.target.value)}
           >
@@ -144,38 +157,37 @@ export default function Dashboard() {
             ))}
           </select>
 
-          {getMemberItems(selectedFamilyMember).map((item) => {
-            const purchased = isPurchased(item);
-            return (
-              <div
-                className="border p-2 mb-2 flex justify-between items-center"
-                key={item.id}
-              >
-                <div>
-                  <p className={purchased ? "line-through" : ""}>
+          <div className="space-y-3">
+            {getMemberItems(selectedFamilyMember).map((item) => {
+              const purchased = isPurchased(item);
+              return (
+                <div
+                  key={item.id}
+                  className="flex justify-between items-center p-3 bg-gray-50 rounded-md border border-gray-200"
+                >
+                  <p
+                    className={`text-gray-700 ${
+                      purchased ? "line-through text-gray-400" : ""
+                    }`}
+                  >
                     {item.itemName}
                   </p>
+                  <button
+                    onClick={() =>
+                      purchased ? unmarkPurchased(item) : markPurchased(item)
+                    }
+                    className={`px-3 py-1 rounded-md text-white ${
+                      purchased
+                        ? "bg-red-500 hover:bg-red-600"
+                        : "bg-green-500 hover:bg-green-600"
+                    } transition-colors`}
+                  >
+                    {purchased ? "Unmark" : "Mark as Purchased"}
+                  </button>
                 </div>
-                <div>
-                  {!purchased ? (
-                    <button
-                      className="bg-green-500 text-white p-1 px-2 rounded"
-                      onClick={() => markPurchased(item)}
-                    >
-                      Mark as Purchased
-                    </button>
-                  ) : (
-                    <button
-                      className="bg-red-500 text-white p-1 px-2 rounded"
-                      onClick={() => unmarkPurchased(item)}
-                    >
-                      Unmark
-                    </button>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

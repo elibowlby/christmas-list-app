@@ -38,21 +38,23 @@ export default function Login() {
   }
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       {showForgotPinModal && (
         <ForgotPinModal
           name={name}
           onClose={() => setShowForgotPinModal(false)}
         />
       )}
-      <div className="bg-white p-8 rounded shadow w-full max-w-sm">
-        <h1 className="text-2xl mb-4 font-bold text-center">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
           Family Gift Tracker
         </h1>
 
-        <label className="block mb-2">Select Your Name</label>
+        <label className="block text-gray-700 font-medium mb-2">
+          Select Your Name
+        </label>
         <select
-          className="w-full border mb-4 p-2"
+          className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-white text-gray-700"
           value={name}
           onChange={(e) => setName(e.target.value)}
         >
@@ -63,25 +65,27 @@ export default function Login() {
           ))}
         </select>
 
-        <label className="block mb-2">Enter PIN</label>
+        <label className="block text-gray-700 font-medium mb-2">
+          Enter PIN
+        </label>
         <input
-          className="w-full border mb-2 p-2"
           type="password"
+          className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-white text-gray-700"
           value={pin}
           onChange={(e) => setPin(e.target.value)}
         />
 
-        {error && <p className="text-red-600 mb-2">{error}</p>}
+        {error && <p className="text-red-600 mb-4">{error}</p>}
 
         <button
-          className="w-full bg-green-600 text-white p-2 rounded hover:bg-green-700 mb-2"
+          className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors mb-4"
           onClick={handleLogin}
         >
           Login
         </button>
 
         <p
-          className="text-sm text-center text-blue-600 cursor-pointer"
+          className="text-sm text-center text-blue-600 hover:text-blue-700 cursor-pointer"
           onClick={() => setShowForgotPinModal(true)}
         >
           Forgot your PIN?
@@ -124,13 +128,15 @@ function ForgotPinModal({ name, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-4 rounded shadow w-full max-w-sm">
-        <h2 className="text-xl font-bold mb-4">Forgot PIN</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Forgot PIN</h2>
 
-        <label className="block mb-2">Select Your Name</label>
+        <label className="block text-gray-700 font-medium mb-2">
+          Select Your Name
+        </label>
         <select
-          className="w-full border mb-4 p-2"
+          className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-white text-gray-700"
           value={selectedName}
           onChange={(e) => setSelectedName(e.target.value)}
         >
@@ -141,16 +147,19 @@ function ForgotPinModal({ name, onClose }) {
           ))}
         </select>
 
-        {status && <p className="mb-2 text-blue-600">{status}</p>}
+        {status && <p className="mb-4 text-blue-600">{status}</p>}
 
-        <div className="flex space-x-2">
+        <div className="flex gap-3">
           <button
-            className="flex-1 bg-blue-600 text-white p-2 rounded"
+            className="flex-1 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors"
             onClick={requestPin}
           >
             Send Me My PIN
           </button>
-          <button className="flex-1 bg-gray-300 p-2 rounded" onClick={onClose}>
+          <button
+            className="flex-1 bg-gray-200 text-gray-700 p-2 rounded-md hover:bg-gray-300 transition-colors"
+            onClick={onClose}
+          >
             Close
           </button>
         </div>
