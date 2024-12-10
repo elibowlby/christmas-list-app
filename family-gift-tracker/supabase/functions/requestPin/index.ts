@@ -87,7 +87,7 @@ serve(async (req: Request) => {
       <p>Use this PIN to log in to your account.</p>
       <div style="margin: 20px 0;">
         <img src="https://i.pinimg.com/736x/ac/66/53/ac66534653f81ed5263111d3a653de63.jpg" alt="Holiday Meme" style="max-width: 100%; border-radius: 8px;">
-        <p style="color: #666; font-style: italic; margin-top: 8px;">When you forget your PIN but the family gift tracker has your back 😎🎄</p>
+        <p style="color: #666; font-style: italic; margin-top: 8px;">Just kidding! Santa might not give you anything, but at least you got your PIN back! 🎅😈🎁</p>
       </div>
       <p style="color: #666;">If you didn't request this PIN, please ignore this email.</p>
     </div>
