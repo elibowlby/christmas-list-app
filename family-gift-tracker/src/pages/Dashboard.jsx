@@ -122,14 +122,14 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-gray-100 overflow-x-hidden">
       <div className="bg-white shadow-md border-b px-6 py-4 flex flex-col md:flex-row justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-800">
+        <h1 className="text-3xl font-bold text-primary">
           🎄 Family Gift Tracker
         </h1>
         <div className="flex items-center gap-4 mt-4 md:mt-0">
-          <span className="text-gray-600">Welcome, {userName}!</span>
+          <span className="text-secondary">Welcome, {userName}!</span>
           <button
             onClick={logout}
-            className="bg-red-50 text-red-600 px-4 py-2 rounded-lg hover:bg-red-100 transition-colors"
+            className="bg-secondary text-white px-4 py-2 rounded-lg hover:bg-secondary-hover transition-colors"
           >
             Sign Out
           </button>
@@ -140,10 +140,10 @@ export default function Dashboard() {
         {/* Left panel: My Wishlist */}
         <div className="w-full md:w-96 bg-white rounded-xl shadow-sm p-6 flex-shrink-0">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-gray-800">Your Wishlist</h2>
+            <h2 className="text-2xl font-bold text-primary">Your Wishlist</h2>
             <button
               onClick={addMyItem}
-              className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+              className="bg-secondary text-white p-3 rounded-lg hover:bg-secondary-hover transition-colors flex items-center gap-2"
             >
               <span>Add Gift Idea</span> 🎁
             </button>
@@ -158,28 +158,38 @@ export default function Dashboard() {
               {myItems.map((item) => (
                 <div
                   key={item.id}
-                  className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors"
+                  className="p-4 bg-background rounded-lg shadow hover:shadow-lg transition-shadow duration-300 flex flex-col border border-primary"
                 >
-                  <p className="text-gray-700">{item.itemName}</p>
+                  <div className="flex justify-between items-center">
+                    <p className="text-gray-800 font-semibold">
+                      {item.itemName}
+                    </p>
+                    <button
+                      onClick={() => editItemLink(item)}
+                      className="bg-accent text-white px-3 py-1 rounded hover:bg-accent-hover transition-colors"
+                    >
+                      Edit
+                    </button>
+                  </div>
                   {item.itemLink && (
                     <a
-                      href={item.itemLink}
+                      href={
+                        item.itemLink.startsWith("http")
+                          ? item.itemLink
+                          : `https://${item.itemLink}`
+                      }
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-500 underline"
+                      className="text-secondary underline mt-2"
                     >
                       View Item
                     </a>
                   )}
                   {item.itemNotes && (
-                    <p className="text-gray-500 mt-2">{item.itemNotes}</p>
+                    <p className="text-gray-600 mt-2 italic">
+                      {item.itemNotes}
+                    </p>
                   )}
-                  <button
-                    onClick={() => editItemLink(item)}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors mt-2"
-                  >
-                    Edit Link & Notes
-                  </button>
                 </div>
               ))}
             </div>
@@ -188,12 +198,12 @@ export default function Dashboard() {
 
         {/* Main area: Family Wishlists */}
         <div className="flex-1 bg-white rounded-xl shadow-sm p-6">
-          <h2 className="text-xl font-bold text-gray-800 mb-6">
+          <h2 className="text-2xl font-bold text-primary mb-6">
             Family Wishlists
           </h2>
 
           <select
-            className="w-full mb-6 p-3 border border-gray-300 rounded-lg bg-white text-gray-700 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            className="w-full mb-6 p-3 border border-primary rounded-lg bg-white text-primary focus:border-secondary focus:ring-2 focus:ring-secondary"
             value={selectedFamilyMember}
             onChange={(e) => setSelectedFamilyMember(e.target.value)}
           >
@@ -215,26 +225,44 @@ export default function Dashboard() {
                 return (
                   <div
                     key={item.id}
-                    className="flex flex-col md:flex-row justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-200"
+                    className="flex flex-col md:flex-row justify-between items-start md:items-center p-4 bg-background rounded-lg shadow hover:shadow-lg transition-shadow duration-300 border border-primary"
                   >
-                    <p
-                      className={`text-gray-700 ${
-                        purchased ? "line-through text-gray-400" : ""
-                      }`}
-                    >
-                      {item.itemName}
-                    </p>
-                    {item.itemNotes && (
-                      <p className="text-gray-500 mt-2">{item.itemNotes}</p>
-                    )}
+                    <div className="flex-1">
+                      <p
+                        className={`text-gray-800 font-medium ${
+                          purchased ? "line-through text-gray-400" : ""
+                        }`}
+                      >
+                        {item.itemName}
+                      </p>
+                      {item.itemNotes && (
+                        <p className="text-gray-600 mt-1 italic">
+                          {item.itemNotes}
+                        </p>
+                      )}
+                      {item.itemLink && (
+                        <a
+                          href={
+                            item.itemLink.startsWith("http")
+                              ? item.itemLink
+                              : `https://${item.itemLink}`
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-secondary underline text-sm mt-1 block"
+                        >
+                          View Item
+                        </a>
+                      )}
+                    </div>
                     <button
                       onClick={() =>
                         purchased ? unmarkPurchased(item) : markPurchased(item)
                       }
-                      className={`px-4 py-2 rounded-lg text-white mt-2 md:mt-0 ${
+                      className={`mt-2 md:mt-0 px-4 py-2 rounded-lg text-white ${
                         purchased
-                          ? "bg-red-500 hover:bg-red-600"
-                          : "bg-green-500 hover:bg-green-600"
+                          ? "bg-secondary hover:bg-secondary-hover"
+                          : "bg-primary hover:bg-primary-hover"
                       } transition-colors flex items-center gap-2`}
                     >
                       {purchased ? "Unmark 🎁" : "I'll Get This! 🎄"}

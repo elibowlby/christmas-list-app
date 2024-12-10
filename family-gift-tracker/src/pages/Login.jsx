@@ -38,23 +38,23 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4 overflow-x-hidden">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 overflow-x-hidden">
       {showForgotPinModal && (
         <ForgotPinModal
           name={name}
           onClose={() => setShowForgotPinModal(false)}
         />
       )}
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-gray-800 text-center mb-6">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm border border-primary">
+        <h1 className="text-3xl font-bold text-primary text-center mb-6">
           Family Gift Tracker
         </h1>
 
-        <label className="block text-gray-700 font-medium mb-2">
+        <label className="block text-primary font-medium mb-2">
           Select Your Name
         </label>
         <select
-          className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-white text-gray-700"
+          className="w-full p-2 mb-4 border border-primary rounded-md bg-white text-primary focus:outline-none focus:ring-2 focus:ring-secondary"
           value={name}
           onChange={(e) => setName(e.target.value)}
         >
@@ -65,27 +65,25 @@ export default function Login() {
           ))}
         </select>
 
-        <label className="block text-gray-700 font-medium mb-2">
-          Enter PIN
-        </label>
+        <label className="block text-primary font-medium mb-2">Enter PIN</label>
         <input
           type="password"
-          className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-2 mb-4 border border-primary rounded-md bg-white text-primary focus:outline-none focus:ring-2 focus:ring-secondary"
           value={pin}
           onChange={(e) => setPin(e.target.value)}
         />
 
-        {error && <p className="text-red-600 mb-4">{error}</p>}
+        {error && <p className="text-secondary mb-4">{error}</p>}
 
         <button
-          className="w-full bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors mb-4"
+          className="w-full bg-primary text-white p-3 rounded-md hover:bg-primary-hover transition-colors mb-4"
           onClick={handleLogin}
         >
           Login
         </button>
 
         <p
-          className="text-sm text-center text-blue-600 hover:text-blue-700 cursor-pointer"
+          className="text-sm text-center text-secondary hover:text-secondary-hover cursor-pointer"
           onClick={() => setShowForgotPinModal(true)}
         >
           Forgot your PIN?
@@ -140,14 +138,14 @@ function ForgotPinModal({ name, onClose }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-        <h2 className="text-xl font-bold text-gray-800 mb-4">Forgot PIN</h2>
+      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm border border-primary">
+        <h2 className="text-2xl font-bold text-primary mb-4">Forgot PIN</h2>
 
-        <label className="block text-gray-700 font-medium mb-2">
+        <label className="block text-primary font-medium mb-2">
           Select Your Name
         </label>
         <select
-          className="w-full p-2 mb-4 border border-gray-300 rounded-md bg-white text-gray-700"
+          className="w-full p-2 mb-4 border border-primary rounded-md bg-white text-primary focus:outline-none focus:ring-2 focus:ring-secondary"
           value={selectedName}
           onChange={(e) => setSelectedName(e.target.value)}
         >
@@ -158,17 +156,17 @@ function ForgotPinModal({ name, onClose }) {
           ))}
         </select>
 
-        {status && <p className="mb-4 text-blue-600">{status}</p>}
+        {status && <p className="mb-4 text-secondary">{status}</p>}
 
         <div className="flex gap-3">
           <button
-            className="flex-1 bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 transition-colors"
+            className="flex-1 bg-secondary text-white p-3 rounded-md hover:bg-secondary-hover transition-colors"
             onClick={requestPin}
           >
             Send Me My PIN
           </button>
           <button
-            className="flex-1 bg-gray-200 text-gray-700 p-2 rounded-md hover:bg-gray-300 transition-colors"
+            className="flex-1 bg-gray-200 text-primary p-3 rounded-md hover:bg-gray-300 transition-colors"
             onClick={onClose}
           >
             Close

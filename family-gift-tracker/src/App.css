@@ -4,6 +4,7 @@
   padding: 1rem;
   text-align: center;
   overflow-x: hidden;
+  background-color: var(--color-background);
 }
 
 .logo {
@@ -13,7 +14,7 @@
   transition: filter 300ms;
 }
 .logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
+  filter: drop-shadow(0 0 2em var(--color-secondary) aa);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
@@ -36,8 +37,11 @@
 
 .card {
   padding: 2em;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-primary);
+  border-radius: 12px;
 }
 
 .read-the-docs {
-  color: #888;
+  color: var(--color-secondary);
 }
