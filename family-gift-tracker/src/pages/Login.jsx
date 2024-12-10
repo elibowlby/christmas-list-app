@@ -23,18 +23,28 @@ export default function Login() {
 
   async function handleLogin() {
     setError(null);
-    // Call a custom RPC or method to validate the PIN:
-    const { data, error } = await supabase.rpc("validate_pin", {
-      user_name: name,
-      user_pin: pin,
-    });
-    if (error || !data) {
-      setError("Invalid PIN");
-      return;
+    try {
+      // First verify the pin directly from the users table
+      const { data: user, error: userError } = await supabase
+        .from("users")
+        .select("*")
+        .eq("name", name)
+        .eq("pin", pin)
+        .single();
+
+      if (userError || !user) {
+        console.error("Login error:", userError);
+        setError("Invalid PIN");
+        return;
+      }
+
+      // If we got here, the login was successful
+      localStorage.setItem("userName", name);
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Login error:", err);
+      setError("An error occurred during login");
     }
-    // If valid, store the name in localStorage as a session
-    localStorage.setItem("userName", name);
-    navigate("/dashboard");
   }
 
   return (
