@@ -1,3 +1,4 @@
+// supabase/functions/requestPin/index.ts
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.1.1";
 import { corsHeaders } from "../_shared/cors.ts";
@@ -9,7 +10,6 @@ const sendgridApiKey = Deno.env.get("SENDGRID_API_KEY")!;
 const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
 serve(async (req: Request) => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -68,15 +68,11 @@ serve(async (req: Request) => {
       body: JSON.stringify({
         personalizations: [
           {
-            to: [
-              {
-                email: user.email, // From the user record in Supabase
-              },
-            ],
+            to: [{ email: user.email }],
           },
         ],
         from: {
-          email: "no-reply@yourdomain.com",
+          email: "elijahbowlby@gmail.com", // Must be verified in SendGrid
           name: "Family Gift Tracker",
         },
         subject: "Your Family Gift Tracker PIN",
@@ -84,35 +80,40 @@ serve(async (req: Request) => {
           {
             type: "text/html",
             value: `
-        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #2563eb;">Family Gift Tracker</h1>
-          <p>Hello ${name},</p>
-          <p>Your new PIN is: <strong>${newPin}</strong></p>
-          <p>Use this PIN to log in to your account.</p>
-          <p style="color: #666;">If you didn't request this PIN, please ignore this email.</p>
-        </div>
-      `,
+            <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+              <h1 style="color: #2563eb;">Family Gift Tracker</h1>
+              <p>Hello ${name},</p>
+              <p>Your new PIN is: <strong>${newPin}</strong></p>
+              <p>Use this PIN to log in to your account.</p>
+              <p style="color: #666;">If you didn't request this PIN, please ignore this email.</p>
+            </div>
+          `,
           },
         ],
       }),
     });
 
     if (!emailResponse.ok) {
-      return new Response(JSON.stringify({ error: "Failed to send email" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      });
+      const errorText = await emailResponse.text();
+      console.error("SendGrid Error:", errorText);
+      return new Response(
+        JSON.stringify({ error: "Failed to send email", details: errorText }),
+        {
+          status: 500,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
 
     return new Response(JSON.stringify({ message: "PIN sent" }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (err) {
     console.error(err);
-    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    return new Response(JSON.stringify({ error: String(err) }), {
       status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }
 });
