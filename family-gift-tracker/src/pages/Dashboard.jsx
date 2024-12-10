@@ -7,12 +7,22 @@ export default function Dashboard() {
   const [userName, setUserName] = useState("");
   const [users, setUsers] = useState([]);
   const [myItems, setMyItems] = useState([]);
-  const [selectedFamilyMember, setSelectedFamilyMember] = useState("");
+  // Update initial state to check localStorage
+  const [selectedFamilyMember, setSelectedFamilyMember] = useState(
+    localStorage.getItem("selectedFamilyMember") || ""
+  );
   const [familyItems, setFamilyItems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // New state for copy confirmation
   const [copyStatus, setCopyStatus] = useState("");
+
+  // Add effect to save selection to localStorage
+  useEffect(() => {
+    if (selectedFamilyMember) {
+      localStorage.setItem("selectedFamilyMember", selectedFamilyMember);
+    }
+  }, [selectedFamilyMember]);
 
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
@@ -24,6 +34,7 @@ export default function Dashboard() {
     fetchData(storedUserName); // Pass userName directly to fetchData
   }, [navigate]);
 
+  // Modify fetchData to preserve selection
   async function fetchData(currentUserName = userName) {
     // Accept userName as parameter
     if (!currentUserName) {
@@ -56,9 +67,16 @@ export default function Dashboard() {
         .eq("ownerId", me.id);
       setMyItems(myData || []);
 
-      // Set initial selected family member
-      const others = allUsers.filter((u) => u.name !== userName);
-      setSelectedFamilyMember(others[0]?.name || "");
+      // Only set initial selected family member if none is selected
+      const others = allUsers.filter((u) => u.name !== currentUserName);
+      if (!selectedFamilyMember) {
+        const storedMember = localStorage.getItem("selectedFamilyMember");
+        setSelectedFamilyMember(
+          storedMember && others.some((u) => u.name === storedMember)
+            ? storedMember
+            : others[0]?.name || ""
+        );
+      }
 
       // Fetch all items with owner information
       const { data: allItems } = await supabase.from("wishlist_items").select(`
@@ -151,17 +169,10 @@ export default function Dashboard() {
     fetchData();
   }
 
-  async function toggleReallyWant(item) {
-    const updatedValue = !item.reallyWant;
-    await supabase
-      .from("wishlist_items")
-      .update({ reallyWant: updatedValue })
-      .eq("id", item.id);
-    fetchData();
-  }
-
+  // Add cleanup on logout
   function logout() {
     localStorage.removeItem("userName");
+    localStorage.removeItem("selectedFamilyMember"); // Add this line
     navigate("/");
   }
 
@@ -248,26 +259,9 @@ export default function Dashboard() {
                   className="p-4 bg-background rounded-lg shadow hover:shadow-lg transition-shadow duration-300 flex flex-col border border-primary"
                 >
                   <div className="flex items-start justify-between">
-                    <div className="flex items-center space-x-2">
-                      <p className="text-gray-800 font-semibold">
-                        {item.itemName}
-                      </p>
-                      <button
-                        onClick={() => toggleReallyWant(item)}
-                        className={`inline-flex items-center justify-center p-1.5 rounded-full transition-all ${
-                          item.reallyWant
-                            ? "text-yellow-500 hover:text-yellow-600"
-                            : "text-gray-300 hover:text-gray-400"
-                        }`}
-                        title={
-                          item.reallyWant
-                            ? "Remove from favorites"
-                            : "Mark as favorite"
-                        }
-                      >
-                        {item.reallyWant ? "⭐" : "★"}
-                      </button>
-                    </div>
+                    <p className="text-gray-800 font-semibold">
+                      {item.itemName}
+                    </p>
                     <button
                       onClick={() => editItemLink(item)}
                       className="bg-accent text-white px-3 py-1 rounded hover:bg-accent-hover transition-colors"
@@ -376,11 +370,6 @@ export default function Dashboard() {
                         >
                           View Item
                         </a>
-                      )}
-                      {item.reallyWant && (
-                        <p className="text-red-500 font-bold mt-2">
-                          ⭐ This item is highly desired!
-                        </p>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
