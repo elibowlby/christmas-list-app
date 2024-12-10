@@ -6,20 +6,22 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  background-color: #f3f4f6;
-  color: #1f2937;
+  background-color: #fffafa; /* Snow */
+  color: #2f4f4f; /* Dark Slate Gray */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  --color-primary: #006400; /* Dark Green */
-  --color-secondary: #b22222; /* Firebrick Red */
-  --color-accent: #ffd700; /* Gold */
+
+  /* Updated Christmas Colors */
+  --color-primary: #008000; /* Green */
+  --color-secondary: #ff0000; /* Red */
+  --color-accent: #ff6347; /* Tomato */
   --color-background: #fffafa; /* Snow */
   --color-text: #2f4f4f; /* Dark Slate Gray */
-  --color-button-hover: #228b22; /* Forest Green */
-  --color-button-secondary-hover: #8b0000; /* Dark Red */
-  --color-accent-hover: #e6c200; /* Darker Gold */
+  --color-button-hover: #006400; /* Dark Green */
+  --color-button-secondary-hover: #cc0000; /* Dark Red */
+  --color-accent-hover: #ee5c42; /* Darker Tomato */
 }
 
 a {
@@ -62,6 +64,7 @@ button {
 button:hover {
   background-color: var(--color-button-hover);
   border-color: var(--color-secondary);
+  transform: scale(1.05);
 }
 button:focus,
 button:focus-visible {
