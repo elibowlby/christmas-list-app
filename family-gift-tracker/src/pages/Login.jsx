@@ -1,26 +1,25 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-const FAMILY_MEMBERS = [
-  "Eli",
-  "Maddy",
-  "Gabe",
-  "Nick",
-  "Mom",
-  "Dad",
-  "Nate",
-  "Ashley",
-];
-
 export default function Login() {
-  const [name, setName] = useState(FAMILY_MEMBERS[0]);
+  const [name, setName] = useState("");
   const [pin, setPin] = useState("");
   const [error, setError] = useState(null);
   const [showForgotPinModal, setShowForgotPinModal] = useState(false);
+  const [familyMembers, setFamilyMembers] = useState([]);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchFamilyMembers() {
+      const { data: users } = await supabase.from("users").select("name");
+      setFamilyMembers(users.map((user) => user.name));
+      setName(users[0]?.name || "");
+    }
+    fetchFamilyMembers();
+  }, []);
 
   async function handleLogin() {
     setError(null);
@@ -57,7 +56,7 @@ export default function Login() {
           value={name}
           onChange={(e) => setName(e.target.value)}
         >
-          {FAMILY_MEMBERS.map((m) => (
+          {familyMembers.map((m) => (
             <option key={m} value={m}>
               {m}
             </option>
@@ -95,6 +94,16 @@ export default function Login() {
 function ForgotPinModal({ name, onClose }) {
   const [selectedName, setSelectedName] = useState(name);
   const [status, setStatus] = useState(null);
+  const [familyMembers, setFamilyMembers] = useState([]);
+
+  useEffect(() => {
+    async function fetchFamilyMembers() {
+      const { data: users } = await supabase.from("users").select("name");
+      setFamilyMembers(users.map((user) => user.name));
+      setSelectedName(users[0]?.name || "");
+    }
+    fetchFamilyMembers();
+  }, []);
 
   async function requestPin() {
     setStatus("Sending...");
@@ -125,7 +134,7 @@ function ForgotPinModal({ name, onClose }) {
           value={selectedName}
           onChange={(e) => setSelectedName(e.target.value)}
         >
-          {FAMILY_MEMBERS.map((m) => (
+          {familyMembers.map((m) => (
             <option key={m} value={m}>
               {m}
             </option>

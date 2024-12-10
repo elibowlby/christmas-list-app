@@ -2,17 +2,6 @@ import { useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 
-const FAMILY_MEMBERS = [
-  "Eli",
-  "Maddy",
-  "Gabe",
-  "Nick",
-  "Mom",
-  "Dad",
-  "Nate",
-  "Ashley",
-];
-
 export default function Dashboard() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
@@ -43,8 +32,8 @@ export default function Dashboard() {
     setMyItems(myData || []);
 
     // Set default selected family member (someone else)
-    const others = FAMILY_MEMBERS.filter((m) => m !== userName);
-    setSelectedFamilyMember(others[0]);
+    const others = allUsers.filter((u) => u.name !== userName);
+    setSelectedFamilyMember(others[0]?.name || "");
 
     // Fetch family items once we know user IDs
     const { data: allItems } = await supabase
@@ -112,7 +101,7 @@ export default function Dashboard() {
     navigate("/");
   }
 
-  const others = FAMILY_MEMBERS.filter((m) => m !== userName);
+  const others = users.filter((u) => u.name !== userName);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -142,15 +131,15 @@ export default function Dashboard() {
 
         {/* Main area: Family Wishlists */}
         <div className="flex-1 p-4">
-          <h2 className="text-lg font-bold mb-2">View Other's Wishlists</h2>
+          <h2 className="text-lg font-bold mb-2">View Other&#39s Wishlists</h2>
           <select
             className="border p-2 mb-4"
             value={selectedFamilyMember}
             onChange={(e) => setSelectedFamilyMember(e.target.value)}
           >
-            {others.map((m) => (
-              <option key={m} value={m}>
-                {m}
+            {others.map((u) => (
+              <option key={u.id} value={u.name}>
+                {u.name}
               </option>
             ))}
           </select>
