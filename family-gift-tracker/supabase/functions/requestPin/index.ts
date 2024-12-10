@@ -54,13 +54,32 @@ serve(async (req: Request) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        personalizations: [{ to: [{ email: user.email }] }],
-        from: { email: "noreply@yourdomain.com" },
-        subject: "Your Requested PIN",
+        personalizations: [
+          {
+            to: [
+              {
+                email: user.email, // From the user record in Supabase
+              },
+            ],
+          },
+        ],
+        from: {
+          email: "no-reply@yourdomain.com",
+          name: "Family Gift Tracker",
+        },
+        subject: "Your Family Gift Tracker PIN",
         content: [
           {
-            type: "text/plain",
-            value: `Hello ${name},\n\nYour new PIN is: ${newPin}\n\nUse this PIN to log in.`,
+            type: "text/html",
+            value: `
+        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+          <h1 style="color: #2563eb;">Family Gift Tracker</h1>
+          <p>Hello ${name},</p>
+          <p>Your new PIN is: <strong>${newPin}</strong></p>
+          <p>Use this PIN to log in to your account.</p>
+          <p style="color: #666;">If you didn't request this PIN, please ignore this email.</p>
+        </div>
+      `,
           },
         ],
       }),

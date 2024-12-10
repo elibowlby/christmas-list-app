@@ -111,19 +111,27 @@ function ForgotPinModal({ name, onClose }) {
 
   async function requestPin() {
     setStatus("Sending...");
-    const res = await fetch(
-      "https://qaybgsgencwnbsolinyz.supabase.co/functions/v1/requestPin",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: selectedName }),
+    try {
+      const res = await fetch(
+        "https://qaybgsgencwnbsolinyz.supabase.co/functions/v1/requestPin",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: selectedName }),
+        }
+      );
+      const json = await res.json();
+
+      if (!res.ok) {
+        throw new Error(json.error || "Failed to send PIN");
       }
-    );
-    const json = await res.json();
-    if (json.error) {
-      setStatus(`Error: ${json.error}`);
-    } else {
+
       setStatus("PIN sent! Check your email.");
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+    } catch (err) {
+      setStatus(`Error: ${err.message}`);
     }
   }
 
