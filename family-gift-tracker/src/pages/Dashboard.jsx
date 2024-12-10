@@ -115,6 +115,15 @@ export default function Dashboard() {
     fetchData();
   }
 
+  async function toggleReallyWant(item) {
+    const updatedValue = !item.reallyWant;
+    await supabase
+      .from("wishlist_items")
+      .update({ reallyWant: updatedValue })
+      .eq("id", item.id);
+    fetchData();
+  }
+
   function logout() {
     localStorage.removeItem("userName");
     navigate("/");
@@ -232,6 +241,20 @@ export default function Dashboard() {
                       {item.itemNotes}
                     </p>
                   )}
+                  <div className="flex justify-end mt-2">
+                    <button
+                      onClick={() => toggleReallyWant(item)}
+                      className={`px-3 py-1 rounded ${
+                        item.reallyWant
+                          ? "bg-red-500 text-white"
+                          : "bg-gray-300 text-black"
+                      }`}
+                    >
+                      {item.reallyWant
+                        ? "Unmark 'Really Want'"
+                        : "Mark 'Really Want'"}
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -314,6 +337,11 @@ export default function Dashboard() {
                         >
                           View Item
                         </a>
+                      )}
+                      {item.reallyWant && (
+                        <p className="text-red-500 font-bold mt-2">
+                          ⭐ This item is highly desired!
+                        </p>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
