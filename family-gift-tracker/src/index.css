@@ -64,3 +64,33 @@ button:focus-visible {
     background-color: #ffffff;
   }
 }
+
+@media (max-width: 768px) {
+  .flex-col {
+    flex-direction: column;
+  }
+  .gap-8 {
+    gap: 2rem;
+  }
+  .p-8 {
+    padding: 2rem;
+  }
+  .w-96 {
+    width: 100%;
+  }
+  .max-w-7xl {
+    max-width: 100%;
+  }
+  .p-4 {
+    padding: 1rem;
+  }
+  .mt-4 {
+    margin-top: 1rem;
+  }
+  .mt-2 {
+    margin-top: 0.5rem;
+  }
+  .mb-6 {
+    margin-bottom: 1.5rem;
+  }
+}

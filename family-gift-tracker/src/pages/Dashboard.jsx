@@ -76,9 +76,26 @@ export default function Dashboard() {
   async function addMyItem() {
     const me = users.find((u) => u.name === userName);
     const itemName = window.prompt("What would you like for Christmas? 🎄🎁");
+    const itemLink = window.prompt("Add a link for the item (optional):");
     if (!itemName?.trim()) return;
 
-    await supabase.from("wishlist_items").insert({ ownerId: me.id, itemName });
+    await supabase
+      .from("wishlist_items")
+      .insert({ ownerId: me.id, itemName, itemLink });
+    fetchData();
+  }
+
+  async function editItemLink(item) {
+    const newLink = window.prompt(
+      "Edit the link for this item:",
+      item.itemLink || ""
+    );
+    if (newLink === null) return;
+
+    await supabase
+      .from("wishlist_items")
+      .update({ itemLink: newLink })
+      .eq("id", item.id);
     fetchData();
   }
 
@@ -99,11 +116,11 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="bg-white shadow-md border-b px-6 py-4 flex justify-between items-center">
+      <div className="bg-white shadow-md border-b px-6 py-4 flex flex-col md:flex-row justify-between items-center">
         <h1 className="text-2xl font-bold text-gray-800">
           🎄 Family Gift Tracker
         </h1>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 mt-4 md:mt-0">
           <span className="text-gray-600">Welcome, {userName}!</span>
           <button
             onClick={logout}
@@ -114,9 +131,9 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="flex gap-8 p-8 max-w-7xl mx-auto">
+      <div className="flex flex-col md:flex-row gap-8 p-4 md:p-8 max-w-7xl mx-auto">
         {/* Left panel: My Wishlist */}
-        <div className="w-96 bg-white rounded-xl shadow-sm p-6">
+        <div className="w-full md:w-96 bg-white rounded-xl shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold text-gray-800">Your Wishlist</h2>
             <button
@@ -139,6 +156,22 @@ export default function Dashboard() {
                   className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-blue-200 transition-colors"
                 >
                   <p className="text-gray-700">{item.itemName}</p>
+                  {item.itemLink && (
+                    <a
+                      href={item.itemLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-500 underline"
+                    >
+                      View Item
+                    </a>
+                  )}
+                  <button
+                    onClick={() => editItemLink(item)}
+                    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition-colors mt-2"
+                  >
+                    Edit Link
+                  </button>
                 </div>
               ))}
             </div>
@@ -174,7 +207,7 @@ export default function Dashboard() {
                 return (
                   <div
                     key={item.id}
-                    className="flex justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-200"
+                    className="flex flex-col md:flex-row justify-between items-center p-4 bg-gray-50 rounded-lg border border-gray-200"
                   >
                     <p
                       className={`text-gray-700 ${
@@ -187,7 +220,7 @@ export default function Dashboard() {
                       onClick={() =>
                         purchased ? unmarkPurchased(item) : markPurchased(item)
                       }
-                      className={`px-4 py-2 rounded-lg text-white ${
+                      className={`px-4 py-2 rounded-lg text-white mt-2 md:mt-0 ${
                         purchased
                           ? "bg-red-500 hover:bg-red-600"
                           : "bg-green-500 hover:bg-green-600"
