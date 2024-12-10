@@ -27,6 +27,7 @@ export default function Dashboard() {
   async function fetchData() {
     setIsLoading(true);
     try {
+      // First fetch all users
       const { data: allUsers } = await supabase.from("users").select("*");
       setUsers(allUsers || []);
 
@@ -37,19 +38,34 @@ export default function Dashboard() {
         return;
       }
 
+      // Fetch my items
       const { data: myData } = await supabase
         .from("wishlist_items")
         .select("*")
         .eq("ownerId", me.id);
       setMyItems(myData || []);
 
+      // Set initial selected family member
       const others = allUsers.filter((u) => u.name !== userName);
       setSelectedFamilyMember(others[0]?.name || "");
 
-      const { data: allItems } = await supabase
-        .from("wishlist_items")
-        .select("*, ownerId (name, id)");
-      setFamilyItems(allItems || []);
+      // Fetch all items with owner information
+      const { data: allItems } = await supabase.from("wishlist_items").select(`
+          *,
+          owner:ownerId (
+            id,
+            name
+          )
+        `);
+
+      // Transform the data to match the expected structure
+      const transformedItems =
+        allItems?.map((item) => ({
+          ...item,
+          ownerId: item.owner, // Restructure to match previous format
+        })) || [];
+
+      setFamilyItems(transformedItems);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -58,7 +74,9 @@ export default function Dashboard() {
   }
 
   function getMemberItems(memberName) {
-    return familyItems.filter((i) => i.ownerId.name === memberName);
+    return (
+      familyItems.filter((item) => item.ownerId?.name === memberName) || []
+    );
   }
 
   async function markPurchased(item) {
