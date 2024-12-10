@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState(localStorage.getItem("userName"));
+  const [userName, setUserName] = useState("");
   const [users, setUsers] = useState([]);
   const [myItems, setMyItems] = useState([]);
   const [selectedFamilyMember, setSelectedFamilyMember] = useState("");
@@ -15,12 +15,14 @@ export default function Dashboard() {
   const [copyStatus, setCopyStatus] = useState("");
 
   useEffect(() => {
-    if (!userName) {
-      navigate("/");
-    } else {
+    const storedUserName = localStorage.getItem("userName");
+    if (storedUserName) {
+      setUserName(storedUserName);
       fetchData();
+    } else {
+      navigate("/");
     }
-  }, [userName]);
+  }, []);
 
   async function fetchData() {
     setIsLoading(true);
@@ -308,7 +310,7 @@ export default function Dashboard() {
                           }
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-secondary underline text-sm mt-1 block"
+                          className="text-secondary underline text-sm mt-1 mb-4 md:mb-0 block"
                         >
                           View Item
                         </a>
@@ -339,7 +341,7 @@ export default function Dashboard() {
                           onClick={() => markPurchased(item)}
                           className={`px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors flex items-center gap-2`}
                         >
-                          I'll Get This! 🎄
+                          I&apos;ll Get This! 🎄
                         </button>
                       )}
                     </div>
