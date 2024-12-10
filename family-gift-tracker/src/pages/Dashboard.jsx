@@ -312,14 +312,8 @@ export default function Dashboard() {
                     <div className="flex justify-between items-center mt-2">
                       {/* Spacer to align the button */}
                       <div className="flex-1"></div>
-                      {/* "I'll Get This" button */}
-                      {!item.itemLink && <div className="pb-4"></div>}
-                      <button
-                        onClick={() => markPurchased(item)}
-                        className={`px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors flex items-center gap-2`}
-                      >
-                        I&apos;ll Get This! 🎄
-                      </button>
+                      {/* Remove "I'll Get This" button from My Wishlist */}
+                      {/* No button here */}
                     </div>
                   </div>
                 ))}
@@ -426,33 +420,34 @@ export default function Dashboard() {
                         )}
                       </div>
                       <div className="flex items-center gap-2 mt-2 md:mt-0">
-                        {purchased && isOwnPurchase ? (
-                          <button
-                            onClick={() => unmarkPurchased(item)}
-                            className={`px-4 py-2 rounded-lg text-white bg-secondary hover:bg-secondary-hover transition-colors flex items-center gap-2`}
-                          >
-                            Unmark 🎁
-                          </button>
-                        ) : purchased && !isOwnPurchase ? (
-                          <button
-                            onClick={() =>
-                              alert(
-                                "You cannot unmark this item since someone else has already marked it."
-                              )
-                            }
-                            disabled
-                            className={`px-4 py-2 rounded-lg text-white bg-secondary opacity-50 cursor-not-allowed`}
-                          >
-                            Unmark 🎁
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => markPurchased(item)}
-                            className={`px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors flex items-center gap-2`}
-                          >
-                            I&apos;ll Get This! 🎄
-                          </button>
-                        )}
+                        {item.ownerId.name !== userName &&
+                          (purchased && isOwnPurchase ? (
+                            <button
+                              onClick={() => unmarkPurchased(item)}
+                              className={`px-4 py-2 rounded-lg text-white bg-secondary hover:bg-secondary-hover transition-colors flex items-center gap-2`}
+                            >
+                              Unmark 🎁
+                            </button>
+                          ) : purchased && !isOwnPurchase ? (
+                            <button
+                              onClick={() =>
+                                alert(
+                                  "You cannot unmark this item since someone else has already marked it."
+                                )
+                              }
+                              disabled
+                              className={`px-4 py-2 rounded-lg text-white bg-secondary opacity-50 cursor-not-allowed`}
+                            >
+                              Unmark 🎁
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => markPurchased(item)}
+                              className={`px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors flex items-center gap-2`}
+                            >
+                              I&apos;ll Get This! 🎄
+                            </button>
+                          ))}
                       </div>
                     </div>
                   );
