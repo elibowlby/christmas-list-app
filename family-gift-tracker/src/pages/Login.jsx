@@ -23,8 +23,12 @@ export default function Login() {
 
   async function handleLogin() {
     setError(null);
+    if (!name || !pin) {
+      setError("Please enter both name and PIN");
+      return;
+    }
+
     try {
-      // First verify the pin directly from the users table
       const { data: user, error: userError } = await supabase
         .from("users")
         .select("*")
@@ -40,7 +44,10 @@ export default function Login() {
 
       // If we got here, the login was successful
       localStorage.setItem("userName", name);
-      navigate("/dashboard");
+      // Add a small delay to ensure localStorage is set
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 100);
     } catch (err) {
       console.error("Login error:", err);
       setError("An error occurred during login");

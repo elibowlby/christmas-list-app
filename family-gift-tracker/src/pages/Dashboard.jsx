@@ -16,24 +16,35 @@ export default function Dashboard() {
 
   useEffect(() => {
     const storedUserName = localStorage.getItem("userName");
-    if (storedUserName) {
-      setUserName(storedUserName);
-      fetchData();
-    } else {
+    if (!storedUserName) {
       navigate("/");
+      return;
     }
-  }, []);
+    setUserName(storedUserName);
+    fetchData(storedUserName); // Pass userName directly to fetchData
+  }, [navigate]);
 
-  async function fetchData() {
+  async function fetchData(currentUserName = userName) {
+    // Accept userName as parameter
+    if (!currentUserName) {
+      console.error("No username provided");
+      navigate("/");
+      return;
+    }
+
     setIsLoading(true);
     try {
-      // First fetch all users
       const { data: allUsers } = await supabase.from("users").select("*");
-      setUsers(allUsers || []);
+      if (!allUsers?.length) {
+        console.error("No users found");
+        navigate("/");
+        return;
+      }
+      setUsers(allUsers);
 
-      const me = allUsers.find((u) => u.name === userName);
+      const me = allUsers.find((u) => u.name === currentUserName);
       if (!me) {
-        console.error("User not found:", userName);
+        console.error("User not found:", currentUserName);
         navigate("/");
         return;
       }
@@ -68,6 +79,7 @@ export default function Dashboard() {
       setFamilyItems(transformedItems);
     } catch (error) {
       console.error("Error fetching data:", error);
+      navigate("/");
     } finally {
       setIsLoading(false);
     }
