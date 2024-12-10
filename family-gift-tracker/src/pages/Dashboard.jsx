@@ -31,6 +31,12 @@ export default function Dashboard() {
       setUsers(allUsers || []);
 
       const me = allUsers.find((u) => u.name === userName);
+      if (!me) {
+        console.error("User not found:", userName);
+        navigate("/");
+        return;
+      }
+
       const { data: myData } = await supabase
         .from("wishlist_items")
         .select("*")
