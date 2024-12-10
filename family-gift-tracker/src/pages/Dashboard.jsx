@@ -60,6 +60,11 @@ export default function Dashboard() {
   }
 
   async function unmarkPurchased(item) {
+    const me = users.find((u) => u.name === userName);
+    if (item.purchasedBy !== me.id) {
+      console.error("You do not have permission to unmark this item.");
+      return;
+    }
     await supabase
       .from("wishlist_items")
       .update({ purchasedBy: null })
@@ -222,6 +227,10 @@ export default function Dashboard() {
             <div className="space-y-4">
               {getMemberItems(selectedFamilyMember).map((item) => {
                 const purchased = isPurchased(item);
+                const isOwnPurchase =
+                  item.purchasedBy ===
+                  users.find((u) => u.name === userName)?.id;
+
                 return (
                   <div
                     key={item.id}
@@ -255,18 +264,21 @@ export default function Dashboard() {
                         </a>
                       )}
                     </div>
-                    <button
-                      onClick={() =>
-                        purchased ? unmarkPurchased(item) : markPurchased(item)
-                      }
-                      className={`mt-2 md:mt-0 px-4 py-2 rounded-lg text-white ${
-                        purchased
-                          ? "bg-secondary hover:bg-secondary-hover"
-                          : "bg-primary hover:bg-primary-hover"
-                      } transition-colors flex items-center gap-2`}
-                    >
-                      {purchased ? "Unmark 🎁" : "I'll Get This! 🎄"}
-                    </button>
+                    {purchased && isOwnPurchase ? (
+                      <button
+                        onClick={() => unmarkPurchased(item)}
+                        className={`mt-2 md:mt-0 px-4 py-2 rounded-lg text-white bg-secondary hover:bg-secondary-hover transition-colors flex items-center gap-2`}
+                      >
+                        Unmark 🎁
+                      </button>
+                    ) : !purchased ? (
+                      <button
+                        onClick={() => markPurchased(item)}
+                        className={`mt-2 md:mt-0 px-4 py-2 rounded-lg text-white bg-primary hover:bg-primary-hover transition-colors flex items-center gap-2`}
+                      >
+                        I'll Get This! 🎄
+                      </button>
+                    ) : null}
                   </div>
                 );
               })}
