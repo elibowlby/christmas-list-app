@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, memo } from "react";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+import DashboardComponent from "./pages/Dashboard";
+
+const Dashboard = memo(DashboardComponent);
 
 function App() {
   return (

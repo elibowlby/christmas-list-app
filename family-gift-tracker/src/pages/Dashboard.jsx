@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { supabase } from "../supabaseClient";
 import { useNavigate } from "react-router-dom";
 
 export default function Dashboard() {
+  const isMounted = useRef(true);
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [users, setUsers] = useState([]);
@@ -36,7 +37,21 @@ export default function Dashboard() {
       return;
     }
     setUserName(storedUserName);
-    fetchData(storedUserName); // Pass userName directly to fetchData
+    fetchData(storedUserName);
+
+    // Add visibility change listener
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && isMounted.current) {
+        fetchData(storedUserName);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      isMounted.current = false;
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
   }, [navigate]);
 
   // Modify fetchData to preserve selection
@@ -47,7 +62,6 @@ export default function Dashboard() {
       navigate("/");
       return;
     }
-
     setIsLoading(true);
     try {
       const { data: allUsers } = await supabase.from("users").select("*");
@@ -57,7 +71,6 @@ export default function Dashboard() {
         return;
       }
       setUsers(allUsers);
-
       const me = allUsers.find((u) => u.name === currentUserName);
       if (!me) {
         console.error("User not found:", currentUserName);
@@ -85,24 +98,15 @@ export default function Dashboard() {
 
       // Fetch all items with owner information
       const { data: allItems } = await supabase.from("wishlist_items").select(`
-          *,
-          owner:ownerId (
-            id,
-            name
-          )
-        `);
-
-      // Transform the data to match the expected structure
-      const transformedItems =
-        allItems?.map((item) => ({
-          ...item,
-          ownerId: item.owner, // Restructure to match previous format
-        })) || [];
-
-      setFamilyItems(transformedItems);
+        *,
+        ownerId (
+          name,
+          id
+        )
+      `);
+      setFamilyItems(allItems || []);
     } catch (error) {
       console.error("Error fetching data:", error);
-      navigate("/");
     } finally {
       setIsLoading(false);
     }
