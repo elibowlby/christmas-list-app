@@ -228,7 +228,7 @@ export default function Dashboard() {
 
     try {
       const response = await fetch(
-        "https://your-supabase-function-url/sendAllGiftIdeas",
+        "https://qaybgsgencwnbsolinyz.supabase.co/functions/v1/sendAllGiftIdeas",
         {
           method: "POST",
           headers: {
