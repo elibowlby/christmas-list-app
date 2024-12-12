@@ -221,14 +221,21 @@ export default function Dashboard() {
       });
   };
 
-  // Function to handle sending all gift ideas
   // JavaScript
   async function handleSendAllGiftIdeas() {
     setSendAllStatus("Sending...");
+
+    // Get the current user and access token
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+
     const userEmail = user?.email;
+    const accessToken = session?.access_token;
 
     try {
       const response = await fetch(
@@ -237,6 +244,8 @@ export default function Dashboard() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            // Include the Authorization header with the access token
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify({ requesterEmail: userEmail }),
         }
