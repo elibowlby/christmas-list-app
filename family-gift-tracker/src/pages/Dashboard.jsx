@@ -222,9 +222,13 @@ export default function Dashboard() {
   };
 
   // Function to handle sending all gift ideas
+  // JavaScript
   async function handleSendAllGiftIdeas() {
     setSendAllStatus("Sending...");
-    const userEmail = supabase.auth.user()?.email;
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    const userEmail = user?.email;
 
     try {
       const response = await fetch(
