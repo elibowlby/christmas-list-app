@@ -23,6 +23,9 @@ export default function Dashboard() {
   const [isFamilyWishlistCollapsed, setIsFamilyWishlistCollapsed] =
     useState(true);
 
+  // New state for send all status
+  const [sendAllStatus, setSendAllStatus] = useState("");
+
   // Add effect to save selection to localStorage
   useEffect(() => {
     if (selectedFamilyMember) {
@@ -218,7 +221,41 @@ export default function Dashboard() {
       });
   };
 
+  // Function to handle sending all gift ideas
+  async function handleSendAllGiftIdeas() {
+    setSendAllStatus("Sending...");
+    const userEmail = supabase.auth.user()?.email;
+
+    try {
+      const response = await fetch(
+        "https://your-supabase-function-url/sendAllGiftIdeas",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ requesterEmail: userEmail }),
+        }
+      );
+
+      if (response.ok) {
+        setSendAllStatus("All gift ideas sent successfully! 🎉");
+      } else {
+        const errorText = await response.text();
+        setSendAllStatus(`Error: ${errorText}`);
+      }
+    } catch (err) {
+      console.error("Error sending all gift ideas:", err);
+      setSendAllStatus("An unexpected error occurred.");
+    }
+
+    setTimeout(() => setSendAllStatus(""), 5000);
+  }
+
   const others = users.filter((u) => u.name !== userName);
+
+  // Determine if the current user is "Eli"
+  const isEli = userName === "Eli";
 
   if (isLoading) {
     return (
@@ -460,6 +497,22 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+
+        {/* New Button for Eli */}
+        {isEli && (
+          <div className="w-full md:w-96 bg-white rounded-xl shadow-sm p-6 flex-shrink-0">
+            <h2 className="text-2xl font-bold text-primary mb-4">
+              Admin Actions
+            </h2>
+            <button
+              onClick={handleSendAllGiftIdeas}
+              className="w-full bg-accent text-white p-3 rounded-md hover:bg-accent-hover transition-colors mb-4 flex items-center justify-center"
+            >
+              Send All Gift Ideas Now 🎅
+            </button>
+            {sendAllStatus && <p className="text-secondary">{sendAllStatus}</p>}
+          </div>
+        )}
       </div>
     </div>
   );
