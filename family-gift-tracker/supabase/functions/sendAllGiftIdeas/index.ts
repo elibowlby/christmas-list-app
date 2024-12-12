@@ -32,13 +32,6 @@ serve(async (req) => {
       .eq("email", requesterEmail)
       .single();
 
-    if (userError || !user || user.name !== "Eli") {
-      return new Response("Unauthorized", {
-        status: 403,
-        headers: corsHeaders,
-      });
-    }
-
     // Fetch all users
     const { data: users, error: usersError } = await supabase
       .from("users")
