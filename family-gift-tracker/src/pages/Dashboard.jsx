@@ -221,33 +221,26 @@ export default function Dashboard() {
       });
   };
 
-  // JavaScript
   async function handleSendAllGiftIdeas() {
     setSendAllStatus("Sending...");
-
-    // Get the current user and access token
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
-
-    const userEmail = user?.email;
-    const accessToken = session?.access_token;
-
     try {
+      // Get current user's email from Supabase auth
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
       const response = await fetch(
         "https://qaybgsgencwnbsolinyz.supabase.co/functions/v1/sendAllGiftIdeas",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            // Include the Authorization header with the access token
-            Authorization: `Bearer ${accessToken}`,
+            // Use the anon key instead of access token
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
           },
-          body: JSON.stringify({ requesterEmail: userEmail }),
+          body: JSON.stringify({
+            requesterEmail: user?.email,
+          }),
         }
       );
 
