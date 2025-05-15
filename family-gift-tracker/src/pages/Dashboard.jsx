@@ -230,7 +230,7 @@ export default function Dashboard() {
       } = await supabase.auth.getUser();
 
       const response = await fetch(
-        "https://qaybgsgencwnbsolinyz.supabase.co/functions/v1/sendAllGiftIdeas",
+        import.meta.env.SUPABASE_SEND_ALL_GIFT_IDEAS_URL,
         {
           method: "POST",
           headers: {

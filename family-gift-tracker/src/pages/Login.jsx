@@ -127,17 +127,14 @@ function ForgotPinModal({ name, onClose }) {
   async function requestPin() {
     setStatus("Sending...");
     try {
-      const res = await fetch(
-        "https://qaybgsgencwnbsolinyz.supabase.co/functions/v1/requestPin",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-          },
-          body: JSON.stringify({ name: selectedName }),
-        }
-      );
+      const res = await fetch(import.meta.env.SUPABASE_REQUEST_PIN_UR, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ name: selectedName }),
+      });
       const json = await res.json();
 
       if (!res.ok) {
